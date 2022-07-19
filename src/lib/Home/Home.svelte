@@ -12,6 +12,8 @@
 
   let show = false;
   let user = {};
+  let src = "";
+  let input;
 
   onMount(() => get());
 
@@ -47,6 +49,11 @@
     axios.delete(endpoint + `/${u.id}`).then((res) => {
       get();
     });
+  };
+
+  const onChange = () => {
+    let file = input.files[0];
+    src = URL.createObjectURL(file);
   };
 </script>
 
@@ -113,7 +120,29 @@
             required
           />
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <div class="form-group mb-2">
+          <label for="image">Upload</label>
+          <input
+            class="form-control"
+            type="file"
+            name="image"
+            id="image"
+            accept=".jpg, .jpeg, .png"
+            bind:this={input}
+            on:change={onChange}
+          />
+        </div>
+
+        {#if src != ""}
+          <div class="d-flex justify-content-center">
+            <!-- svelte-ignore a11y-img-redundant-alt -->
+            <img class="preview" {src} alt="image" />
+          </div>
+        {/if}
+
+        <div class="d-grid gap-2 col-6 mx-auto">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
       </form>
       <hr />
     {/if}
@@ -161,5 +190,12 @@
   }
   form {
     width: 300px;
+  }
+  .preview {
+    height: 200px;
+    margin-bottom: 0.5rem;
+    padding: 5px;
+    border-radius: 5px;
+    border: 2px solid;
   }
 </style>
